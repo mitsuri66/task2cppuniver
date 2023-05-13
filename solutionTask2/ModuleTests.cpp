@@ -1,3 +1,4 @@
+#include "InputValidation.h"
 #include "ModuleTests.h"
 #include "ArrayFilling.h"
 #include <string>
@@ -30,12 +31,12 @@ bool secondTest() {
 	std::vector<Order> testVector = fileInput(filepath);
 	if (testVector.size() == 1) {
 		for (i = 0; i < testVector.size(); i++) {
-			if (testVector[i].getTitle() != "WashDishes"
-				|| testVector[i].getAuthor() != "Mom"
-				|| testVector[i].getRecipient() != "Me"
+			if (testVector[i].getTitle() != "title"
+				|| testVector[i].getAuthor() != "author"
+				|| testVector[i].getRecipient() != "recipient"
 				|| testVector[i].getDate() != "22/04/2023"
 				|| testVector[i].getCopies() != 4
-				|| testVector[i].getDepartment() != "MyRoom"
+				|| testVector[i].getDepartment() != "department"
 				|| testVector[i].getDeadline() != "23/04/2023") {
 				std::cout << "Во время теста произошла ошибка\n" << std::endl;
 				result = false;
@@ -52,12 +53,12 @@ bool secondTest() {
 	if (!result) {
 		std::cout << "Во время выполнения теста произошла ошибка." << std::endl;
 		std::cout << "Ожидаемый результат:" << std::endl;
-		std::cout << "Название документа: " << "WashDishes"
-			<< "\nАвтор документа: " << "Mom"
-			<< "\nПолучатель документа: " << "Me"
+		std::cout << "Название документа: " << "title"
+			<< "\nАвтор документа: " << "author"
+			<< "\nПолучатель документа: " << "recipient"
 			<< "\nДата создания: " << "22/04/2023"
 			<< "\nКол-во копий: " << 4
-			<< "\nОтделение, получившее документ: " << "MyRoom"
+			<< "\nОтделение, получившее документ: " << "department"
 			<< "\nДата дедлайна: " << "23/04/2023" << "\n" << std::endl;
 		std::cout << "Полученный результат: " << std::endl;
 		for (i = 0; i < testVector.size(); i++) {
@@ -67,12 +68,86 @@ bool secondTest() {
 	return result;
 }
 
-void thirdTest() {
+bool thirdTest() {
 	std::cout << "Проводится тест на проверку функции getInt()" << std::endl;
 	{
 		std::istringstream input("10");
+		std::streambuf* cinbuf = std::cin.rdbuf(input.rdbuf());
 
+		bool result = (getInt() == 10);
+		if (result) {
+			std::cout << "Тест 1: успешно" << std::endl;
+		}
+		else {
+			std::cout << "Тест 1: провален" << std::endl;
+			return false;
+		}
+
+		std::cin.rdbuf(cinbuf);
 	}
+
+	{
+		std::istringstream input("zxc\n10\n");
+		std::streambuf* cinbuf = std::cin.rdbuf(input.rdbuf());
+
+		bool result = (getInt() == 10);
+		if (result) {
+			std::cout << "Тест 2: успешно" << std::endl;
+		}
+		else {
+			std::cout << "Тест 2: провален" << std::endl;
+			return false;
+		}
+
+		std::cin.rdbuf(cinbuf);
+	}
+	return true;
+}
+
+bool fourthTest() {
+	std::cout << "Проводится тест на проверку функции isValidDate()" << std::endl;
+	std::cout << "Будет проводится несколько тестов с различными наборами значений:\n"
+		<< "1: \"10/10/2022\"\n2: \"32/13/2123\"\n3: \"10.10.2022\"\n4: \"10:10:2023\"\n5: \"10/10/10/2023\"" << std::endl;
+	if (isValidDate("10/10/2022")) {
+		std::cout << "Тест 1: успешно" << std::endl;
+	}
+	else {
+		std::cout << "Тест 1: провален" << std::endl;
+		return false;
+	}
+	if (!isValidDate("32/13/2123")) {
+		std::cout << "Тест 2: успешно" << std::endl;
+	}
+	else {
+		std::cout << "Тест 2: провален" << std::endl;
+		return false;
+	}
+	if (!isValidDate("10.10.2022")) {
+		std::cout << "Тест 3: успешно" << std::endl;
+	}
+	else {
+		std::cout << "Тест 3: провален" << std::endl;
+		return false;
+	}
+	if (!isValidDate("10:10:2023")) {
+		std::cout << "Тест 4: успешно" << std::endl;
+	}
+	else {
+		std::cout << "Тест 4: провален" << std::endl;
+		return false;
+	}
+	if (!isValidDate("10/10/10/2023")) {
+		std::cout << "Тест 5: успешно" << std::endl;
+	}
+	else {
+		std::cout << "Тест 5: провален" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool fifthTest() {
+	return true;
 }
 
 void mainTest() {
@@ -95,7 +170,7 @@ void mainTest() {
 		std::cout << "Второй модульный тест не пройден." << std::endl;
 	}
 	std::cout << std::endl;
-	/*bool thirdCheck = thirdListTest();
+	bool thirdCheck = thirdTest();
 	std::cout << std::endl;
 	if (thirdCheck) {
 		std::cout << "Третий модульный тест пройден." << std::endl;
@@ -113,7 +188,7 @@ void mainTest() {
 		std::cout << "Четвертый модульный тест не пройден." << std::endl;
 	}
 	std::cout << std::endl;
-	bool fifthCheck = fifthTest();
+	/*bool fifthCheck = fifthTest();
 	std::cout << std::endl;
 	if (fifthCheck) {
 		std::cout << "Пятый модульный тест пройден." << std::endl;

@@ -54,28 +54,39 @@ std::vector<Order> consoleFilling(const int numOfOrders) {
 	return orders;
 }
 
-int getSizeFromFile(const std::string filepath) {
-	std::string data{};
-	int tempLines{};
-	int size{};
+bool checkFilepath(const std::string filepath) {
 	std::ifstream myFile{};
 	myFile.open(filepath);
+
 	if (!std::ifstream(filepath)) {
 		std::cout << "Файл не существует. Повторите ввод." << std::endl;
 		myFile.close();
-		return 0;
+		return false;
 	}
 
 	std::error_code ec;
 	if (!std::filesystem::is_regular_file(filepath, ec)) {
 		std::cout << "Адрес содержит недопустимые значения. Повторите ввод." << std::endl;
 		myFile.close();
-		return 0;
+		return false;
 	}
 
 	if (!myFile) {
 		std::cout << "Загрузка запрещена. Повторите ввод." << std::endl;
 		myFile.close();
+		return false;
+	}
+	return true;
+}
+
+int getSizeFromFile(const std::string filepath) {
+	std::string data{};
+	int tempLines{};
+	int size{};
+	std::ifstream myFile{};
+	myFile.open(filepath);
+
+	if (!checkFilepath(filepath)) {
 		return 0;
 	}
 
@@ -153,7 +164,7 @@ std::vector<Order> fileInput(const std::string filepath) {
 	}
 }
 
-void fileSave(std::vector<Order> orders, const int numOfOrders) {
+void fileSave(std::vector<Order> orders) {
 	std::string filepath{};
 	bool isDataSaved = false;
 	while (!isDataSaved) {
@@ -188,7 +199,7 @@ void fileSave(std::vector<Order> orders, const int numOfOrders) {
 		myFile.close();
 		myFile.open(filepath, std::ofstream::trunc);
 
-		for (int i = 0; i < numOfOrders; i++) {
+		for (int i = 0; i < orders.size(); i++) {
 			myFile << orders[i].getTitle() << "\n" << orders[i].getAuthor() << "\n" << orders[i].getRecipient() << "\n"
 				<< orders[i].getDate() << "\n" << orders[i].getCopies() << "\n" << orders[i].getDepartment() << "\n"
 				<< orders[i].getDeadline() << std::endl;

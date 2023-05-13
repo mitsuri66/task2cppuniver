@@ -57,15 +57,20 @@ void startProgram() {
 			std::cout << "Хотите сохранить данные в файл?\n" << "0 - Нет\n1 - Да" << std::endl;
 			save = getBool();
 			if (save) {
-				fileSave(orders, numOfOrders);
+				fileSave(orders);
 			}
+			orders.clear();
 			break;
 		case fstart:
 			std::cout << "Ввести данные из(укажите путь к файлу): ";
 			std::getline(std::cin, filepath);
+			while (!checkFilepath(filepath)) {
+				std::getline(std::cin, filepath);
+			}
 			orders = fileInput(filepath);
 			std::cout << std::endl;
 			showArray(orders);
+			orders.clear();
 			break;
 		case tests:
 			mainTest();
@@ -73,8 +78,11 @@ void startProgram() {
 		case end:
 			quit = true;
 			break;
+		default:
+			std::cout << "Такого пункта нет. Повторите ввод" << std::endl;
+			break;
 		}
+
 	}
-	orders.clear();
 	std::cout << "До свидания!" << std::endl;
 }
